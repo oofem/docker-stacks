@@ -92,6 +92,7 @@ COPY examples/vtkdemo.ipynb ${HOME}/sample-notebooks
 COPY examples/running_solver_demo.ipynb ${HOME}/sample-notebooks
 COPY examples/util.py ${HOME}/sample-notebooks
 COPY examples/Generating_model.ipynb ${HOME}/sample-notebooks
+COPY examples/assemble-and-solve.ipynb ${HOME}/sample-notebooks
 
 WORKDIR ${HOME}
 RUN jupyter notebook --generate-config
