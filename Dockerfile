@@ -31,7 +31,7 @@ RUN git clone https://github.com/oofem/oofem.git && \
     cd oofem; git submodule update --init  && \
     mkdir build &&\
     cd build; cmake -DCMAKE_BUILD_TYPE="Release" -DUSE_PYBIND_BINDINGS="ON" .. && \
-    make -j 8
+    make -j 
     
 # -------------------------------------------------------------------------
 # Basic oofem distribution image
@@ -63,10 +63,10 @@ ENV PYTHONPATH=/lib
 ENV HOME="/home/${NB_USER}"
 # Install some packages (libx11 xvfb and libgl1 needed by pyvista)
 RUN apt-get update --yes && \
-    apt-get install --yes --no-install-recommends tini python3 python3-dev python3-pip libx11-6  libgl1-mesa-glx xvfb nano && \
+    apt-get install --yes --no-install-recommends tini python3 python3-dev python3-pip nano && \
     apt-get clean && rm -fr /var/lib/apt/lists/* && \
     pip install --upgrade pip && \
-    pip install pyvista numpy matplotlib
+    pip install numpy 
 USER ${NB_UID}
 WORKDIR ${HOME}
 
@@ -79,7 +79,12 @@ ARG NB_UID
 ARG NB_GUD
 USER root
 ENV HOME="/home/${NB_USER}"
-RUN pip install jupyter 
+RUN apt-get update --yes && \
+    apt-get install --yes --no-install-recommends libx11-6  libgl1-mesa-glx xvfb libxrender1 && \
+    apt-get clean && rm -fr /var/lib/apt/lists/* && \
+    pip install pyvista matplotlib  pythreejs itkwidgets && \
+    pip install jupyter
+#   pip install ipyvtklink ipywidgets
 
 USER ${NB_UID}
 
