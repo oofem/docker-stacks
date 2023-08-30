@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Salome
+Comment=
+Exec=/usr/bin/mesa_salome
+Icon=
+Path=/home/headless
+Terminal=false
+StartupNotify=false
