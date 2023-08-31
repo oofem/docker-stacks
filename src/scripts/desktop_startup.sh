@@ -2,6 +2,13 @@
 ### every exit != 0 fails the script
 # set -e
 
+# Acknowledgment
+#
+# This script comes originally from
+# https://github.com/joe-speedboat/docker.xfce-vnc/blob/master/Dockerfile
+#
+
+
 ## argument handling
 if [[ $1 =~ -d|--debug ]]; then
     echo -e "\n\n------------------ DEBUG VNC STARTUP -----------------"
