@@ -1,0 +1,3 @@
+Plane_tmsm.out
+Test of coupled thermo-mechanical problem
+StaggeredProblem nsteps 1 timeDefinedByProb 1 prob1 "Plane_tm.in" prob2 "Plane_sm.in" 

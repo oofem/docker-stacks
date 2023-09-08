@@ -50,7 +50,7 @@ COPY --from=build /tmp/oofem/tools/unv2oofem "${HOME}/oofem-tools"
 RUN useradd --user-group --system --no-log-init --create-home --shell /bin/bash --uid "${NB_UID}" "${NB_USER}"
 USER ${NB_USER}
 WORKDIR "${HOME}/oofem-tools"
-COPY examples/*.in ${HOME}/oofem-examples/
+COPY examples/oofem-examples/*.in ${HOME}/oofem-examples/
 WORKDIR ${HOME}
 
 # -------------------------------------------------------------------------
@@ -96,11 +96,7 @@ RUN mkdir "${HOME}/work" && \
     chmod g+rwX "${HOME}/work" "${HOME}/sample-notebooks" 
 ENV PYTHONPATH=/lib:${HOME}/sample-notebooks
 COPY config/jupyter_notebook_config.py /etc/jupyter
-COPY examples/vtkdemo.ipynb ${HOME}/sample-notebooks
-COPY examples/running_solver_demo.ipynb ${HOME}/sample-notebooks
-COPY examples/util.py ${HOME}/sample-notebooks
-COPY examples/Generating_model.ipynb ${HOME}/sample-notebooks
-COPY examples/assemble-and-solve.ipynb ${HOME}/sample-notebooks
+COPY examples/sample-notebooks/* ${HOME}/sample-notebooks/
 
 WORKDIR ${HOME}
 RUN jupyter notebook --generate-config
@@ -116,7 +112,7 @@ USER ${NB_UID}
 WORKDIR ${HOME}
 
 # -------------------------------------------------------------------------
-# oofem-jupyter image
+# oofem-course image
 # -------------------------------------------------------------------------
 FROM oofem-python AS oofem-course
 ARG SALOME_VERSION=9.11.0
@@ -242,6 +238,7 @@ RUN \
     locale-gen en_US.UTF-8
 
 USER ${NB_UID}
+COPY examples/oofem-course ${HOME}/oofem-course
 WORKDIR ${HOME}
 ENTRYPOINT ["/dockerstartup/desktop_startup.sh"]
 CMD ["--wait"]

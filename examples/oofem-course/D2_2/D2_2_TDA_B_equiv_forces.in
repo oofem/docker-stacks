@@ -1,0 +1,84 @@
+D2_2_TDA_B_equiv_forces.out
+example on construction stages: equivalent forces to impose load
+#
+StaticStructural nsteps 3 prescribedTimes 3 1. 2. 3. nmodules 2 miniter 1
+#
+vtkxml tstep_step 1 domain_all vars 2 1 4 primvars 1 1 stype 1 regionsets 1 1
+vtkxml tstep_step 1 domain_all vars 2 1 4 primvars 1 1 stype 1 regionsets 1 2
+#
+domain 2dPlaneStress
+OutputManager tstep_all dofman_all element_all
+ndofman 6 nelem 2 ncrosssect 2 nmat 2 nbc 5 nic 0 nltf 3 nset 5
+#
+######## NODES
+#
+node 1 coords 3 0. 0. 0.
+node 2 coords 3 1. 0. 0.
+node 3 coords 3 0. 1. 0.
+node 4 coords 3 1. 1. 0.
+node 5 coords 3 0. 2. 0.
+node 6 coords 3 1. 2. 0.
+#
+######## ELEMENTS
+#
+planestress2d 1 nodes 4 1 2 4 3
+planestress2d 2 nodes 4 3 4 6 5
+#
+######## CROSS-SECTIONS
+#
+# CS1 = concrete stage 1
+# CS2 = concrete stage 2
+#
+SimpleCS 1 thick 1 material 1 set 1
+SimpleCS 2 thick 1 material 2 set 2
+#
+######## MATERIALS
+#
+# material 1 = concrete stage 1
+# material 2 = concrete stage 2
+#
+IsoLE 1 talpha 0. d 24.e-3 E 20.e3 n 0.2 
+IsoLE 2 talpha 0. d 24.e-3 E 20.e3 n 0.2 castingTime 3.
+#
+######## BOUNDARY CONDITIONS
+#
+# pinned left support
+BoundaryCondition 1 loadTimeFunction 1 dofs 2 1 2 values 2 0. 0. set 3
+#
+# vertically supported right node
+BoundaryCondition 2 loadTimeFunction 1 dofs 1 2 values 1 0. set 4
+#
+# dead weight - concrete stage 1
+Deadweight 3 loadTimeFunction 1 Components 2 0.0 -1.0 set 1
+#
+# dead weight - concrete stage 2
+Deadweight 4 loadTimeFunction 2 Components 2 0.0 -1.0 set 2
+#
+# dead weight - equivalent forces
+NodalLoad 5 loadTimeFunction 3 dofs 1 2 Components 1 -12.e-3 set 5
+#
+######## TIME FUNCTIONS
+#
+# permanent supports, permanent self weight
+ConstantFunction 1 f(t) 1.0
+#
+# real loading + fixed dummy nodes
+UsrDefLTF   2 f(t) "( h(3.))"
+#
+# artificial equivalent loading
+PeakFunction   3 t 2. f(t) 1.
+#
+#
+# sets - elements
+# concrete stage 1
+set  1 elements 1 1
+# concrete stage 2
+set  2 elements 1 2
+#
+# sets - nodes
+# fixed left node
+set 3 nodes 1 1 
+# vertically supported right node
+set 4 nodes 1 2
+# vertical equivalent loading
+set 5 nodes 2 3 4

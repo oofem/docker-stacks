@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<VTKFile type="Collection" version="0.1">
+<Collection>
+<DataSet timestep="2" group="" part="" file="Samal.out.m1.2.vtu"/>
+<DataSet timestep="4" group="" part="" file="Samal.out.m1.4.vtu"/>
+<DataSet timestep="6" group="" part="" file="Samal.out.m1.6.vtu"/>
+<DataSet timestep="8" group="" part="" file="Samal.out.m1.8.vtu"/>
+<DataSet timestep="10" group="" part="" file="Samal.out.m1.10.vtu"/>
+</Collection>
+</VTKFile>

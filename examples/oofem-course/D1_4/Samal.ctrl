@@ -1,0 +1,61 @@
+Samal.out
+Linear structural analysis
+StaticStructural nsteps 10 nmodules 3
+#
+# PRIMVARS
+# oofem/src/oofemlib/unknowntype.h
+#   ENUM_ITEM_WITH_VALUE(DisplacementVector, 1) \
+#
+# VARS (primvars, ipvars, cellvars)
+# oofem/src/oofemlib/internalstatetype.h
+#    ENUM_ITEM_WITH_VALUE(IST_StressTensor, 1) \
+#    ENUM_ITEM_WITH_VALUE(IST_PrincipalStressTensor, 2) \
+#    ENUM_ITEM_WITH_VALUE(IST_StrainTensor, 4) \
+#    ENUM_ITEM_WITH_VALUE(IST_PrincStressVector1, 124) 
+#
+# export modules 1 + 2
+vtkxml primvars 1 1 vars 2 1 4 ipvars 5 1 2 4 12 124 tstep_step 2 stype 1 regionsets 1 1
+vtkxml primvars 1 1 vars 2 1 4 tstep_step 2 stype 1 regionsets 1 2
+Matlab tstep_step 1 dofman all element all mesh data reactionforces integrationpoints internalvars 2 1 4 
+domain 2dPlaneStress
+OutputManager tstep_all dofman_all element_all
+ncrosssect 2 nmat 2 nbc 3 nic 0 nltf 2 nset 5
+SimpleCS 1 thick 1.0 material 1 set 1
+SimpleCS 2 thick 1.0 material 2 set 2
+#misesMat 1 d 1.0 tAlpha 12.e-6 E 210000. n 0.30 sig0 445. H 0.01 omega_crit 0.0 a 0.0
+isoLE 1 d 1. E 210000. n 0.30 tAlpha 0.000012
+isoLE 2 d 1. E 210000. n 0.30 tAlpha 0.000012
+BoundaryCondition 1 loadTimeFunction 1 dofs 1 1 values 1 0.0 set 3
+BoundaryCondition 2 loadTimeFunction 1 dofs 1 2 values 1 0.0 set 4
+BoundaryCondition 3 loadTimeFunction 2 dofs 1 2 values 1 7.e-5 set 5
+ConstantFunction 1 f(t) 1.0
+PiecewiseLinFunction 2 t 2 1.0 10.0 f(t) 2 0.0 1.0
+set 1 elements
+set 2 elements
+set 3 nodes
+set 4 nodes
+set 5 nodes
+#%BEGIN_CHECK%
+#TIME
+#DOFMAN  number 9 dof 2 type d
+#REACTION number 9 dof 2
+#ELEMENT number 280 gp 1 keyword 1 component 2
+#%END_CHECK%
+
+group Steel
+elemprop set 1
+etype[41] TrPlaneStress2D
+
+group Elastic
+elemprop set 2
+etype[41] TrPlaneStress2D
+
+group NodesX
+nodeprop set 3
+
+group NodesY
+nodeprop set 4
+
+group Displacement
+nodeprop set 5
+

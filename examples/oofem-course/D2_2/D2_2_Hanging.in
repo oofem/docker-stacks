@@ -1,0 +1,48 @@
+D2_2_Hanging.out
+# 
+Example on Hanging node 3: incompatible FE mesh
+#
+LinearStatic nsteps 1 nmodules 1
+#
+vtkxml tstep_step 1 domain_all vars 2 1 4 primvars 1 1 
+#
+domain 2dPlaneStress
+#
+OutputManager tstep_all dofman_all element_all
+ndofman 8 nelem 2 ncrosssect 1 nmat 1 nbc 2 nic 0 nltf 1
+#
+# NODES
+#
+node 1 coords 2 0. 0. bc 2 1 1 
+node 2 coords 2 1. 0.  
+node 3 coords 2 0. 1. 
+node 4 coords 2 1. 1. load 1 2
+#
+hangingNode 11 coords 2  1. 0.25 doftype 2 2 2 MasterElement 1
+node 12 coords 2  2. 0.25 bc 2 0 1 
+hangingNode 13 coords 2  1. 0.75 doftype 2 2 2 MasterElement 1
+node 14 coords 2  2. 0.75
+#
+# ELEMENTS
+#
+planestress2d  1   nodes 4   1 2 4 3 crossSect 1 mat 1 
+planestress2d  2   nodes 4   11 12 14 13 crossSect 1 mat 1 
+#
+# CROSSECTION
+#
+SimpleCS 1 thick 1.0 width 1.0
+#
+# MATERIAL
+#
+IsoLE 1  tAlpha 0.0  d 0.0  E 10.e3  n 0.2
+#
+# BOUNDARY CONDITIONS
+#
+BoundaryCondition 1 loadTimeFunction 1 prescribedvalue 0.
+NodalLoad 2 Components 2 0. -1.  loadTimeFunction 1
+#
+# TIME FUNCTION
+#
+ConstantFunction 1 f(t) 1.0
+
+

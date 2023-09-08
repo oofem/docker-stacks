@@ -1,0 +1,100 @@
+D2_2_TDA_C_dummy_mat.out
+example on construction stages: example which uses a dummy material to impose load
+#
+StaticStructural nsteps 3 prescribedTimes 3 1. 2. 3. nmodules 3 miniter 1
+#
+vtkxml tstep_step 1 domain_all vars 2 1 4 primvars 1 1 stype 1 regionsets 1 1
+vtkxml tstep_step 1 domain_all vars 2 1 4 primvars 1 1 stype 1 regionsets 1 2
+vtkxml tstep_step 1 domain_all vars 2 1 4 primvars 1 1 stype 1 regionsets 1 3
+#
+domain 2dPlaneStress
+OutputManager tstep_all dofman_all element_all
+ndofman 8 nelem 3 ncrosssect 3 nmat 3 nbc 6 nic 0 nltf 4 nset 6
+#
+######## NODES
+#
+node 1 coords 3 0. 0. 0.
+node 2 coords 3 1. 0. 0.
+node 3 coords 3 0. 1. 0.
+node 4 coords 3 1. 1. 0.
+node 5 coords 3 0. 2. 0.
+node 6 coords 3 1. 2. 0.
+node 7 coords 3 0. 2. 0.
+node 8 coords 3 1. 2. 0.
+#
+######## ELEMENTS
+#
+planestress2d 1 nodes 4 1 2 4 3
+planestress2d 2 nodes 4 3 4 6 5
+planestress2d 3 nodes 4 3 4 8 7 activityltf 4
+#
+######## CROSS-SECTIONS
+#
+# CS1 = concrete stage 1
+# CS2 = concrete stage 2
+# CS3 = concrete dummy
+#
+SimpleCS 1 thick 1 material 1 set 1
+SimpleCS 2 thick 1 material 2 set 2
+SimpleCS 3 thick 1 material 3 set 3 
+#
+######## MATERIALS
+#
+# material 1 = concrete stage 1
+# material 2 = concrete stage 2
+# material 3 = concrete dummy
+#
+IsoLE 1 talpha 0. d 24.e-3 E 20.e3 n 0.2 
+IsoLE 2 talpha 0. d 24.e-3 E 20.e3 n 0.2 castingTime 3.
+IsoLE 3 talpha 0. d 24.e-3 E 20.e-3 n 0.0 castingTime 2.
+#
+######## BOUNDARY CONDITIONS
+#
+# pinned left support
+BoundaryCondition 1 loadTimeFunction 1 dofs 2 1 2 values 2 0. 0. set 4
+#
+# vertically supported right node
+BoundaryCondition 2 loadTimeFunction 1 dofs 1 2 values 1 0. set 5
+#
+# dead weight - concrete stage 1
+Deadweight 3 loadTimeFunction 1 Components 2 0.0 -1.0 set 1
+#
+# dead weight - concrete stage 2
+Deadweight 4 loadTimeFunction 2 Components 2 0.0 -1.0 set 2
+#
+# dead weight - dummy concrete
+Deadweight 5 loadTimeFunction 3 Components 2 0.0 -1.0 set 3
+#
+# fixed dummy nodes
+BoundaryCondition 6 loadTimeFunction 1 dofs 2 1 2 values 2 0. 0. isImposedTimeFunction 2 set 6
+#
+######## TIME FUNCTIONS
+#
+# permanent supports, permanent self weight
+ConstantFunction 1 f(t) 1.0
+#
+# real loading + fixed dummy nodes
+UsrDefLTF   2 f(t) "( h(3.))"
+#
+# artificial loading
+UsrDefLTF   3 f(t) "( h(2.))"
+#
+# activity ltf
+UsrDefLTF   4 f(t) "( 1.-h(3.) )"
+#
+#
+# sets - elements
+# concrete stage 1
+set  1 elements 1 1
+# concrete stage 2
+set  2 elements 1 2
+# dummy material
+set  3 elements 1 3
+#
+# sets - nodes
+# fixed left node
+set 4 nodes 1 1 
+# vertically supported right node
+set 5 nodes 1 2
+# fixed deactivated material
+set 6 nodes 2 7 8
